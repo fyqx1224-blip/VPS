@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>机房 + 住宅 套壳 SOP</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+<style>
+body{
+    background:#0f172a;
+    color:#e2e8f0;
+    font-family: "Segoe UI", sans-serif;
+    margin:0;
+    padding:40px;
+}
+h1,h2,h3{
+    color:#38bdf8;
+}
+.section{
+    margin-bottom:50px;
+}
+.code-container{
+    position:relative;
+}
+.copy-btn{
+    position:absolute;
+    right:10px;
+    top:10px;
+    background:#38bdf8;
+    color:black;
+    border:none;
+    padding:5px 10px;
+    cursor:pointer;
+    border-radius:5px;
+    font-size:12px;
+}
+pre{
+    border-radius:10px;
+}
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🚀 机房 + 住宅 套壳量产 SOP</h1>
+<p>适用于：VPS + Webshare 住宅 + iPhone 小火箭</p>
+
+<div class="section">
+<h2>第一阶段：准备材料</h2>
+
+<div class="card">
+<h3>① 机房 VPS</h3>
+<ul>
+<li>美国机房</li>
+<li>Ubuntu 22.04</li>
+<li>Root 权限</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>② Webshare 住宅</h3>
+记录：
+<pre><code>
+住宅IP:
+端口:
+用户名:
+密码:
+</code></pre>
+</div>
+
+<div class="card">
+<h3>③ SSH 工具</h3>
+推荐：FinalShell
+</div>
+
+</div>
+
+<div class="section">
+<h2>第二阶段：安装 sing-box</h2>
+
+<div class="code-container">
+<button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><code class="language-bash">
+wget https://github.com/SagerNet/sing-box/releases/download/v1.13.9/sing-box_1.13.9_linux_amd64.deb
+dpkg -i sing-box_1.13.9_linux_amd64.deb
+</code></pre>
+</div>
+
+</div>
+
+<div class="section">
+<h2>第三阶段：标准配置模板</h2>
+
+<div class="code-container">
+<button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><code class="language-json">
+{
+  "log": {
+    "level": "info"
+  },
+
+  "inbounds": [
+    {
+      "type": "hysteria2",
+      "tag": "hy2",
+      "listen": "0.0.0.0",
+      "listen_port": 42293,
+      "users": [
+        {
+          "password": "你的密码"
+        }
+      ],
+      "tls": {
+        "enabled": false
+      }
+    }
+  ],
+
+  "outbounds": [
+    {
+      "type": "http",
+      "tag": "webshare",
+      "server": "住宅IP",
+      "server_port": 住宅端口,
+      "username": "住宅用户名",
+      "password": "住宅密码"
+    }
+  ],
+
+  "route": {
+    "final": "webshare"
+  }
+}
+</code></pre>
+</div>
+
+</div>
+
+<div class="section">
+<h2>第四阶段：启动服务</h2>
+
+<div class="code-container">
+<button class="copy-btn" onclick="copyCode(this)">复制</button>
+<pre><code class="language-bash">
+systemctl restart sing-box
+systemctl status sing-box
+ss -lunp | grep 42293
+</code></pre>
+</div>
+
+</div>
+
+<div class="section">
+<h2>第五阶段：生成小火箭导入链接</h2>
+
+<div class="card">
+格式：
+<pre><code>
+hysteria2://密码@VPSIP:42293?sni=www.bing.com&insecure=1#Webshare-住宅
+</code></pre>
+</div>
+
+</div>
+
+<script>
+function copyCode(button){
+    const code = button.nextElementSibling.innerText;
+    navigator.clipboard.writeText(code);
+    button.innerText = "已复制";
+    setTimeout(()=>button.innerText="复制",2000);
+}
+</script>
+
+</body>
+</html>
