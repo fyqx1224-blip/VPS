@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>机房 + 住宅 套壳 SOP</title>
+<title>机房 + 住宅 套壳量产 SOP</title>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -12,15 +12,28 @@
 body{
     background:#0f172a;
     color:#e2e8f0;
-    font-family: "Segoe UI", sans-serif;
+    font-family:Segoe UI, sans-serif;
     margin:0;
     padding:40px;
 }
-h1,h2,h3{
+h1,h2{
     color:#38bdf8;
 }
-.section{
-    margin-bottom:50px;
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:25px;
+}
+.btn{
+    display:inline-block;
+    padding:10px 18px;
+    margin-top:10px;
+    background:#38bdf8;
+    color:black;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:bold;
 }
 .code-container{
     position:relative;
@@ -30,7 +43,6 @@ h1,h2,h3{
     right:10px;
     top:10px;
     background:#38bdf8;
-    color:black;
     border:none;
     padding:5px 10px;
     cursor:pointer;
@@ -40,52 +52,59 @@ h1,h2,h3{
 pre{
     border-radius:10px;
 }
-.card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:20px;
+.note{
+    color:#94a3b8;
+    font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🚀 机房 + 住宅 套壳量产 SOP</h1>
-<p>适用于：VPS + Webshare 住宅 + iPhone 小火箭</p>
+<h1>🚀 机房 + 住宅 套壳量产保姆级 SOP</h1>
 
-<div class="section">
-<h2>第一阶段：准备材料</h2>
+<h2>第一步：购买机房 VPS</h2>
 
 <div class="card">
-<h3>① 机房 VPS</h3>
-<ul>
-<li>美国机房</li>
-<li>Ubuntu 22.04</li>
-<li>Root 权限</li>
-</ul>
+<p>推荐使用 Racknerd（支持支付宝 / 微信支付）</p>
+<a class="btn" href="https://my.racknerd.com/aff.php?aff=18919" target="_blank">
+👉 点击购买 VPS
+</a>
+<p class="note">
+推荐配置：<br>
+• 1核 1G 起步<br>
+• Ubuntu 22.04<br>
+• 美国机房
+</p>
 </div>
+
+<h2>第二步：购买住宅代理</h2>
 
 <div class="card">
-<h3>② Webshare 住宅</h3>
-记录：
-<pre><code>
-住宅IP:
-端口:
-用户名:
-密码:
-</code></pre>
+<p>推荐使用 Webshare 住宅</p>
+<a class="btn" href="https://www.webshare.io/?referral_code=c8sut10hwknq" target="_blank">
+👉 点击注册 Webshare
+</a>
+<p class="note">
+购买后记录：<br>
+住宅IP / 端口 / 用户名 / 密码
+</p>
 </div>
+
+<h2>第三步：下载 SSH 工具</h2>
 
 <div class="card">
-<h3>③ SSH 工具</h3>
-推荐：FinalShell
+<p>推荐 FinalShell</p>
+<a class="btn" href="https://www.hostbuf.com/t/988.html" target="_blank">
+👉 下载 FinalShell
+</a>
+<p class="note">
+安装后：<br>
+新建 SSH → 填写 VPS IP → root → 密码 → 连接
+</p>
 </div>
 
-</div>
-
-<div class="section">
-<h2>第二阶段：安装 sing-box</h2>
+<h2>第四步：安装 sing-box</h2>
 
 <div class="code-container">
 <button class="copy-btn" onclick="copyCode(this)">复制</button>
@@ -95,18 +114,13 @@ dpkg -i sing-box_1.13.9_linux_amd64.deb
 </code></pre>
 </div>
 
-</div>
-
-<div class="section">
-<h2>第三阶段：标准配置模板</h2>
+<h2>第五步：写入标准配置</h2>
 
 <div class="code-container">
 <button class="copy-btn" onclick="copyCode(this)">复制</button>
 <pre><code class="language-json">
 {
-  "log": {
-    "level": "info"
-  },
+  "log": { "level": "info" },
 
   "inbounds": [
     {
@@ -115,13 +129,9 @@ dpkg -i sing-box_1.13.9_linux_amd64.deb
       "listen": "0.0.0.0",
       "listen_port": 42293,
       "users": [
-        {
-          "password": "你的密码"
-        }
+        { "password": "自定义密码" }
       ],
-      "tls": {
-        "enabled": false
-      }
+      "tls": { "enabled": false }
     }
   ],
 
@@ -143,10 +153,7 @@ dpkg -i sing-box_1.13.9_linux_amd64.deb
 </code></pre>
 </div>
 
-</div>
-
-<div class="section">
-<h2>第四阶段：启动服务</h2>
+<h2>第六步：启动服务</h2>
 
 <div class="code-container">
 <button class="copy-btn" onclick="copyCode(this)">复制</button>
@@ -157,18 +164,25 @@ ss -lunp | grep 42293
 </code></pre>
 </div>
 
-</div>
-
-<div class="section">
-<h2>第五阶段：生成小火箭导入链接</h2>
+<h2>第七步：iOS 小火箭导入</h2>
 
 <div class="card">
-格式：
+生成链接格式：
 <pre><code>
-hysteria2://密码@VPSIP:42293?sni=www.bing.com&insecure=1#Webshare-住宅
+hysteria2://密码@VPSIP:42293?sni=www.bing.com&insecure=1#住宅
 </code></pre>
+
+在 Safari 打开即可自动跳转导入小火箭。
 </div>
 
+<h2>第八步：PC 使用 Clash Verge</h2>
+
+<div class="card">
+<a class="btn" href="https://github.com/zzzgydi/clash-verge/releases" target="_blank">
+👉 下载 Clash Verge
+</a>
+
+<p>新建配置 → 粘贴 YAML → 启动</p>
 </div>
 
 <script>
