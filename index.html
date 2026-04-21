@@ -1,197 +1,322 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>机房 + 住宅 套壳量产 SOP</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保姆级教程：Hysteria2 + 住宅代理 一键部署指南</title>
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --code-bg: #1e293b;
+            --border-color: #e2e8f0;
+        }
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
-body{
-    background:#0f172a;
-    color:#e2e8f0;
-    font-family:Segoe UI, sans-serif;
-    margin:0;
-    padding:40px;
-}
-h1,h2{
-    color:#38bdf8;
-}
-.card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:25px;
-}
-.btn{
-    display:inline-block;
-    padding:10px 18px;
-    margin-top:10px;
-    background:#38bdf8;
-    color:black;
-    text-decoration:none;
-    border-radius:8px;
-    font-weight:bold;
-}
-.code-container{
-    position:relative;
-}
-.copy-btn{
-    position:absolute;
-    right:10px;
-    top:10px;
-    background:#38bdf8;
-    border:none;
-    padding:5px 10px;
-    cursor:pointer;
-    border-radius:5px;
-    font-size:12px;
-}
-pre{
-    border-radius:10px;
-}
-.note{
-    color:#94a3b8;
-    font-size:14px;
-}
-</style>
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1em;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--text-main);
+            margin-top: 25px;
+        }
+
+        .notice {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            color: #92400e;
+        }
+
+        .link-btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .link-btn:hover {
+            background-color: #2563eb;
+        }
+
+        /* 代码块样式 */
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-light);
+            margin-top: 50px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
-
 <body>
 
-<h1>🚀 机房 + 住宅 套壳量产保姆级 SOP</h1>
+<div class="container">
+    <header>
+        <h1>🚀 从零开始的科学上网配置指南</h1>
+        <p class="subtitle">基于 VPS + 住宅代理 + Hysteria2 + sing-box 的极致防封抗封锁方案</p>
+    </header>
 
-<h2>第一步：购买机房 VPS</h2>
+    <div class="card">
+        <h2>🧱 第一阶段：准备工作</h2>
+        <p>你需要准备一台海外服务器（VPS）和一个住宅代理。这是保证节点既快又不容易被封的核心。</p>
+        
+        <h3>① 购买机房 VPS</h3>
+        <ul>
+            <li>推荐配置：1核 1G 内存以上，1Gbps 带宽。</li>
+            <li>推荐区域：洛杉矶 / 日本 / 新加坡。</li>
+            <li><strong>系统务必选择：Ubuntu 22.04</strong></li>
+        </ul>
+        <a href="https://my.racknerd.com/aff.php?aff=18919" target="_blank" class="link-btn">👉 点击前往 RackNerd 购买</a>
 
-<div class="card">
-<p>推荐使用 Racknerd（支持支付宝 / 微信支付）</p>
-<a class="btn" href="https://my.racknerd.com/aff.php?aff=18919" target="_blank">
-👉 点击购买 VPS
-</a>
-<p class="note">
-推荐配置：<br>
-• 1核 1G 起步<br>
-• Ubuntu 22.04<br>
-• 美国机房
-</p>
-</div>
+        <h3>② 购买住宅代理</h3>
+        <p>用于将你的最终 IP 伪装成真实的家庭宽带。</p>
+        <a href="https://www.webshare.io/?referral_code=c8sut10hwknq" target="_blank" class="link-btn">👉 点击前往 Webshare 购买</a>
+        <div class="notice">
+            <strong>⚠️ 购买后请记下：</strong>住宅 IP、端口、用户名、密码。稍后配置时需要用到。
+        </div>
 
-<h2>第二步：购买住宅代理</h2>
+        <h3>③ 下载 SSH 连接工具</h3>
+        <p>推荐使用 FinalShell，用于连接和控制你的 VPS。</p>
+        <a href="https://www.hostbuf.com/t/988.html" target="_blank" class="link-btn" style="background-color: #475569;">下载 FinalShell</a>
+    </div>
 
-<div class="card">
-<p>推荐使用 Webshare 住宅</p>
-<a class="btn" href="https://www.webshare.io/?referral_code=c8sut10hwknq" target="_blank">
-👉 点击注册 Webshare
-</a>
-<p class="note">
-购买后记录：<br>
-住宅IP / 端口 / 用户名 / 密码
-</p>
-</div>
+    <div class="card">
+        <h2>⚡ 第二阶段：一键部署核心服务</h2>
+        <p>打开 FinalShell，连接上你的 VPS（输入 IP、用户名 root、及密码）。进入黑色命令行界面后，直接复制并粘贴下方的一键部署脚本，然后回车执行。</p>
+        
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">复制完整代码</button>
+<pre><code>cat &lt;&lt; 'EOF' &gt; install_hy2_proxy.sh
+#!/bin/bash
 
-<h2>第三步：下载 SSH 工具</h2>
+echo "=========================================="
+echo "🚀 开始一键部署 sing-box Hysteria2 节点..."
+echo "=========================================="
 
-<div class="card">
-<p>推荐 FinalShell</p>
-<a class="btn" href="https://www.hostbuf.com/t/988.html" target="_blank">
-👉 下载 FinalShell
-</a>
-<p class="note">
-安装后：<br>
-新建 SSH → 填写 VPS IP → root → 密码 → 连接
-</p>
-</div>
+echo "📦 正在更新系统并安装依赖..."
+apt update && apt upgrade -y
+apt install -y curl openssl jq
 
-<h2>第四步：安装 sing-box</h2>
+echo "📦 正在安装 sing-box..."
+bash &lt;(curl -fsSL https://sing-box.app/install.sh)
 
-<div class="code-container">
-<button class="copy-btn" onclick="copyCode(this)">复制</button>
-<pre><code class="language-bash">
-wget https://github.com/SagerNet/sing-box/releases/download/v1.13.9/sing-box_1.13.9_linux_amd64.deb
-dpkg -i sing-box_1.13.9_linux_amd64.deb
-</code></pre>
-</div>
+echo "🔐 正在生成自签证书..."
+mkdir -p /etc/sing-box
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+-keyout /etc/sing-box/private.key \
+-out /etc/sing-box/cert.pem \
+-subj "/CN=www.bing.com" 2&gt;/dev/null
 
-<h2>第五步：写入标准配置</h2>
+echo "=========================================="
+echo "📝 请输入你的住宅代理信息："
+read -p "住宅代理 IP/域名: " proxy_ip
+read -p "住宅代理 端口: " proxy_port
+read -p "住宅代理 用户名: " proxy_user
+read -p "住宅代理 密码: " proxy_pass
+read -p "请设置 Hysteria2 连接密码 (直接回车默认: hy2password): " hy2_pass
+hy2_pass=${hy2_pass:-hy2password}
 
-<div class="code-container">
-<button class="copy-btn" onclick="copyCode(this)">复制</button>
-<pre><code class="language-json">
+echo "⚙️ 正在生成 sing-box 配置文件..."
+cat &gt; /etc/sing-box/config.json &lt;&lt;EOL
 {
   "log": { "level": "info" },
-
   "inbounds": [
     {
       "type": "hysteria2",
-      "tag": "hy2",
-      "listen": "0.0.0.0",
-      "listen_port": 42293,
-      "users": [
-        { "password": "自定义密码" }
-      ],
-      "tls": { "enabled": false }
+      "listen": "::",
+      "listen_port": 42292,
+      "users": [ { "password": "$hy2_pass" } ],
+      "tls": {
+        "enabled": true,
+        "certificate_path": "/etc/sing-box/cert.pem",
+        "key_path": "/etc/sing-box/private.key"
+      }
     }
   ],
-
   "outbounds": [
     {
       "type": "http",
       "tag": "webshare",
-      "server": "住宅IP",
-      "server_port": 住宅端口,
-      "username": "住宅用户名",
-      "password": "住宅密码"
-    }
+      "server": "$proxy_ip",
+      "server_port": $proxy_port,
+      "username": "$proxy_user",
+      "password": "$proxy_pass"
+    },
+    { "type": "direct", "tag": "direct" }
   ],
-
-  "route": {
-    "final": "webshare"
-  }
+  "route": { "final": "webshare" }
 }
-</code></pre>
-</div>
+EOL
 
-<h2>第六步：启动服务</h2>
-
-<div class="code-container">
-<button class="copy-btn" onclick="copyCode(this)">复制</button>
-<pre><code class="language-bash">
+echo "🔄 重启 sing-box 服务..."
 systemctl restart sing-box
-systemctl status sing-box
-ss -lunp | grep 42293
+systemctl enable sing-box
+
+server_ip=$(curl -s ipv4.icanhazip.com)
+
+echo "=========================================="
+echo "✅ 部署完成！"
+echo "=========================================="
+echo ""
+echo "📱 【iOS 小火箭 / Shadowrocket 一键导入链接】"
+echo "hysteria2://$hy2_pass@$server_ip:42292?sni=www.bing.com&insecure=1&obfs=none#Hy2-住宅节点"
+echo ""
+echo "💻 【PC Clash Verge 专属配置片段】"
+cat &lt;&lt;EOL
+proxies:
+  - name: Hy2-Node
+    type: hysteria2
+    server: $server_ip
+    port: 42292
+    password: $hy2_pass
+    sni: www.bing.com
+    skip-cert-verify: true
+    alpn:
+      - h3
+EOL
+echo "=========================================="
+EOF
+
+bash install_hy2_proxy.sh
 </code></pre>
-</div>
+        </div>
+        <p>脚本运行过程中，会提示你输入刚才记下的「住宅代理」信息。按提示输入并回车即可。运行结束后，终端会直接打印出客户端需要的配置信息！</p>
+    </div>
 
-<h2>第七步：iOS 小火箭导入</h2>
+    <div class="card">
+        <h2>📱 第三阶段：客户端连接</h2>
+        
+        <h3>iOS 用户 (Shadowrocket / 小火箭)</h3>
+        <p>直接复制脚本运行完毕后生成的 <code>hysteria2://...</code> 链接，打开小火箭，它会自动识别并弹窗提示添加。</p>
 
-<div class="card">
-生成链接格式：
-<pre><code>
-hysteria2://密码@VPSIP:42293?sni=www.bing.com&insecure=1#住宅
-</code></pre>
+        <h3>PC 用户 (Clash Verge)</h3>
+        <p>打开 Clash Verge，新建一个本地配置文件，将脚本生成的 <code>proxies</code> 及之后的代码段复制粘贴进去即可使用。</p>
+    </div>
 
-在 Safari 打开即可自动跳转导入小火箭。
-</div>
-
-<h2>第八步：PC 使用 Clash Verge</h2>
-
-<div class="card">
-<a class="btn" href="https://github.com/zzzgydi/clash-verge/releases" target="_blank">
-👉 下载 Clash Verge
-</a>
-
-<p>新建配置 → 粘贴 YAML → 启动</p>
+    <div class="footer">
+        <p>© 2026 本教程开源且仅供学习网络架构使用。</p>
+    </div>
 </div>
 
 <script>
-function copyCode(button){
-    const code = button.nextElementSibling.innerText;
-    navigator.clipboard.writeText(code);
-    button.innerText = "已复制";
-    setTimeout(()=>button.innerText="复制",2000);
-}
+    function copyCode(button) {
+        // 寻找按钮旁边的 pre > code 元素
+        const codeBlock = button.nextElementSibling.querySelector('code');
+        const textToCopy = codeBlock.innerText;
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalText = button.innerText;
+            button.innerText = '✅ 已复制！';
+            button.style.backgroundColor = '#10b981';
+            button.style.borderColor = '#10b981';
+            
+            setTimeout(() => {
+                button.innerText = originalText;
+                button.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                button.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }, 2000);
+        }).catch(err => {
+            console.error('复制失败', err);
+            button.innerText = '❌ 复制失败';
+        });
+    }
 </script>
 
 </body>
