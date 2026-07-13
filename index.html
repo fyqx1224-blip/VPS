@@ -201,8 +201,8 @@
     {
       "type": "hysteria2",
       "listen": "::",
-      "listen_port": 42292,
-      "users": [ { "password": "hy2password" } ],
+      "listen_port": 端口,
+      "users": [ { "password": "密码" } ],
       "tls": {
         "enabled": true,
         "certificate_path": "/etc/sing-box/cert.pem",
@@ -235,9 +235,9 @@
         <h3><span>7</span> 检查运行状态</h3>
         <div class="code-wrapper">
             <button class="copy-btn" onclick="copyText(this)">点击复制</button>
-            <pre><code>ss -lunp | grep 42292</code></pre>
+            <pre><code>ss -lunp | grep 端口</code></pre>
         </div>
-        <p>如果看到 <code>UNCONN ... :42292</code> 样式的输出，说明成功！</p>
+        <p>如果看到 <code>UNCONN ... :端口</code> 样式的输出，说明成功！</p>
     </div>
 
     <div class="card">
